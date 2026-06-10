@@ -5,51 +5,60 @@ pub const BlockMesh = struct {
     mesh: Mesh,
 
     pub fn init() BlockMesh {
-        var vertices = [_]Vertex{
-            // 0..3  front (0,0,1)
-            Vertex{ .position = .{ -0.5, -0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ 0.0, 0.0, 1.0 } },
-            Vertex{ .position = .{ 0.5, -0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 0.0 }, .normals = .{ 0.0, 0.0, 1.0 } },
-            Vertex{ .position = .{ 0.5, 0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 1.0 }, .normals = .{ 0.0, 0.0, 1.0 } },
-            Vertex{ .position = .{ -0.5, 0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 1.0 }, .normals = .{ 0.0, 0.0, 1.0 } },
+        var vertices = comptime blk: {
+            var list: [24]Vertex = undefined;
+            var idx: usize = 0;
 
-            // 4..7  back (0,0,-1)
-            Vertex{ .position = .{ -0.5, 0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 1.0 }, .normals = .{ 0.0, 0.0, -1.0 } },
-            Vertex{ .position = .{ 0.5, 0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 1.0 }, .normals = .{ 0.0, 0.0, -1.0 } },
-            Vertex{ .position = .{ 0.5, -0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ 0.0, 0.0, -1.0 } },
-            Vertex{ .position = .{ -0.5, -0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 0.0 }, .normals = .{ 0.0, 0.0, -1.0 } },
+            const color = [_]f32{0.1, 0.2, 0.3, 0};
 
-            // 8..11 left (-1,0,0)
-            Vertex{ .position = .{ -0.5, -0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ -1.0, 0.0, 0.0 } },
-            Vertex{ .position = .{ -0.5, -0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 0.0 }, .normals = .{ -1.0, 0.0, 0.0 } },
-            Vertex{ .position = .{ -0.5, 0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 1.0 }, .normals = .{ -1.0, 0.0, 0.0 } },
-            Vertex{ .position = .{ -0.5, 0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 1.0 }, .normals = .{ -1.0, 0.0, 0.0 } },
+            const faces = [_][3]f32{
+                .{ 0, 0, 1 },   // front
+                .{ 0, 0, -1 },  // back
+                .{ -1, 0, 0 },  // left
+                .{ 1, 0, 0 },   // right
+                .{ 0, -1, 0 },  // bottom
+                .{ 0, 1, 0 },   // top
+            };
 
-            // 12..15 right (1,0,0)
-            Vertex{ .position = .{ 0.5, -0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 0.0 }, .normals = .{ 1.0, 0.0, 0.0 } },
-            Vertex{ .position = .{ 0.5, 0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 1.0 }, .normals = .{ 1.0, 0.0, 0.0 } },
-            Vertex{ .position = .{ 0.5, 0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 1.0 }, .normals = .{ 1.0, 0.0, 0.0 } },
-            Vertex{ .position = .{ 0.5, -0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ 1.0, 0.0, 0.0 } },
+            for (faces) |n| {
+                for (0..4) |v| {
+                    const sx: f32 = if (v == 0 or v == 3) -0.5 else 0.5;
+                    const sy: f32 = if (v == 0 or v == 1) -0.5 else 0.5;
 
-            // 16..19 bottom (0,-1,0)
-            Vertex{ .position = .{ -0.5, -0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 1.0 }, .normals = .{ 0.0, -1.0, 0.0 } },
-            Vertex{ .position = .{ 0.5, -0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 1.0 }, .normals = .{ 0.0, -1.0, 0.0 } },
-            Vertex{ .position = .{ 0.5, -0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 0.0 }, .normals = .{ 0.0, -1.0, 0.0 } },
-            Vertex{ .position = .{ -0.5, -0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ 0.0, -1.0, 0.0 } },
+                    // Better: use normal to decide which axis is constant
+                    var x = sx; var y = sy; var z: f32 = 0.5;
+                    if (n[0] != 0) { x = n[0] * 0.5; y = sy; z = sx; }  // left/right: constant X, vary Y and Z
+                    if (n[1] != 0) { y = n[1] * 0.5; x = sx; z = sy; }  // top/bottom: constant Y, vary X and Z
+                    if (n[2] != 0) { z = n[2] * 0.5; x = sx; y = sy; }  // front/back: constant Z, vary X and Y
 
-            // 20..23 top (0,1,0)
-            Vertex{ .position = .{ -0.5, 0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ 0.0, 1.0, 0.0 } },
-            Vertex{ .position = .{ -0.5, 0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 0.0, 1.0 }, .normals = .{ 0.0, 1.0, 0.0 } },
-            Vertex{ .position = .{ 0.5, 0.5, 0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 1.0 }, .normals = .{ 0.0, 1.0, 0.0 } },
-            Vertex{ .position = .{ 0.5, 0.5, -0.5 }, .color = .{ 0, 0, 0, 0 }, .texture_coords = .{ 1.0, 0.0 }, .normals = .{ 0.0, 1.0, 0.0 } },
+                    list[idx] = Vertex{
+                        .position = .{ x, y, z },
+                        .color = color,
+                        .texture_coords = .{
+                            if (v == 0 or v == 3) 0.0 else 1.0,
+                            if (v == 0 or v == 1) 0.0 else 1.0,
+                        },
+                        .normals = n,
+                    };
+                    idx += 1;
+                }
+            }
+
+            break :blk list;
         };
 
-        const indices = [_]u32{
-            0,  1,  2,  2,  3,  0,
-            4,  5,  6,  6,  7,  4,
-            8,  9,  10, 10, 11, 8,
-            12, 13, 14, 14, 15, 12,
-            16, 17, 18, 18, 19, 16,
-            20, 21, 22, 22, 23, 20,
+        const indices = comptime blk: {
+            var list: [36]u32 = undefined;
+            for (0..6) |face| {
+                const base = @as(u32, @intCast(face * 4));
+                list[face * 6 + 0] = base + 0;
+                list[face * 6 + 1] = base + 1;
+                list[face * 6 + 2] = base + 2;
+                list[face * 6 + 3] = base + 2;
+                list[face * 6 + 4] = base + 3;
+                list[face * 6 + 5] = base + 0;
+            }
+            break :blk list;
         };
 
         return BlockMesh{
