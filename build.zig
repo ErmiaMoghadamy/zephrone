@@ -9,6 +9,41 @@ pub fn build(b: *std.Build) void {
         .target = target,
     });
 
+    const zglfw = b.dependency("zglfw", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const zopengl = b.dependency("zopengl", .{});
+
+    const zstbi = b.dependency("zstbi", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const zmath = b.dependency("zmath", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const zgui = b.dependency("zgui", .{
+        .shared = false,
+        .with_implot = true,
+        .backend = .glfw_opengl3,
+    });
+
+    mod.linkLibrary(zglfw.artifact("glfw"));
+    mod.addImport("zglfw", zglfw.module("root"));
+
+    mod.linkLibrary(zopengl.artifact("zopengl"));
+    mod.addImport("zopengl", zopengl.module("root"));
+
+    mod.linkLibrary(zgui.artifact("imgui"));
+    mod.addImport("zgui", zgui.module("root"));
+
+    mod.addImport("zstbi", zstbi.module("root"));
+    mod.addImport("zmath", zmath.module("root"));
+
     const exe = b.addExecutable(.{
         .name = "zephrone",
         .root_module = b.createModule(.{
@@ -20,6 +55,11 @@ pub fn build(b: *std.Build) void {
             },
         }),
     });
+
+    exe.root_module.addImport("zopengl", zopengl.module("root"));
+    exe.root_module.addImport("zgui", zgui.module("root"));
+    exe.root_module.addImport("zstbi", zstbi.module("root"));
+    exe.root_module.addImport("zmath", zmath.module("root"));
 
     b.installArtifact(exe);
 
@@ -49,5 +89,4 @@ pub fn build(b: *std.Build) void {
     const test_step = b.step("test", "Run tests");
     test_step.dependOn(&run_mod_tests.step);
     test_step.dependOn(&run_exe_tests.step);
-
 }
