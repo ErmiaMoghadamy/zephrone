@@ -1,16 +1,18 @@
 const std = @import("std");
+const zm = @import("zmath");
 const Window = @import("core/window.zig").Window;
 const event = @import("core/event.zig");
 const BlockMesh = @import("DEBUG/block.zig").BlockMesh;
 const Renderer = @import("graphics/renderer.zig").Renderer;
 const Shader = @import("graphics/shader.zig").Shader;
-
+const Camera = @import("core/camera.zig").Camera;
 
 pub const App = struct {
     window: *Window,
     allocator: std.mem.Allocator,
     mesh1: BlockMesh,
     shader1: Shader,
+    camera1: Camera,
 
     pub fn init(allocator: std.mem.Allocator) !*App {
         const app = try allocator.create(App);
@@ -22,7 +24,6 @@ pub const App = struct {
         });
 
 
-
         app.* = App{
             .window = window,
             .allocator = allocator,
@@ -31,7 +32,10 @@ pub const App = struct {
                 @embedFile("shaders/common.vert.glsl"),
                 @embedFile("shaders/common.frag.glsl"),
             ),
+            .camera1 = Camera.init(@as(f32, @floatFromInt(window.data.width)) / @as(f32, @floatFromInt(window.data.height))),
         };
+
+
 
         window.setEventCallback(app, eventCallback);
 
@@ -93,8 +97,15 @@ pub const App = struct {
         while (!self.window.shouldCloseWindow()) {
             Window.HandleInput();
             Renderer.clear();
+
             self.mesh1.mesh.bind();
             self.shader1.bind();
+
+            self.shader1.set_mat("u_view", @bitCast(self.camera1.view));
+            self.shader1.set_mat("u_projection", @bitCast(self.camera1.projection));
+            self.shader1.set_mat("u_model", @bitCast(zm.identity()));
+
+
             Renderer.drawMesh(&self.mesh1.mesh);
 
             self.window.swapBuffers();
