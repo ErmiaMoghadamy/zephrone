@@ -1,50 +1,54 @@
 const Mesh = @import("../graphics/mesh.zig").Mesh;
-const Vertex = @import("../graphics/buffer.zig").Vertex;
+const Vertex = @import("../graphics/vertex_array.zig").Vertex;
 
 pub const BlockMesh = struct {
     mesh: Mesh,
 
     pub fn init() BlockMesh {
-        var vertices = comptime blk: {
-            var list: [24]Vertex = undefined;
-            var idx: usize = 0;
+        var vertices: [24]Vertex = comptime blk: {
+            const w: f32 = 3.0; // 6.0/2
+            const h: f32 = 0.5; // 1.0/2
+            const d: f32 = 3.0; // 6.0/2
+            const tileXZ: f32 = 3.0;
+            const tileY: f32 = 0.5;
 
-            const color = [_]f32{0.1, 0.2, 0.3, 0};
+            break :blk .{
+                // --- TOP FACE ---
+                .{ .position = .{ -w, h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, tileXZ }, .normals = .{ 0, 1, 0 } },
+                .{ .position = .{ -w, h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ 0, 1, 0 } },
+                .{ .position = .{ w, h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, 0.0 }, .normals = .{ 0, 1, 0 } },
+                .{ .position = .{ w, h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, tileXZ }, .normals = .{ 0, 1, 0 } },
 
-            const faces = [_][3]f32{
-                .{ 0, 0, 1 },   // front
-                .{ 0, 0, -1 },  // back
-                .{ -1, 0, 0 },  // left
-                .{ 1, 0, 0 },   // right
-                .{ 0, -1, 0 },  // bottom
-                .{ 0, 1, 0 },   // top
+                // --- FRONT FACE ---
+                .{ .position = .{ -w, -h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ 0, 0, 1 } },
+                .{ .position = .{ w, -h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, 0.0 }, .normals = .{ 0, 0, 1 } },
+                .{ .position = .{ w, h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, tileY }, .normals = .{ 0, 0, 1 } },
+                .{ .position = .{ -w, h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, tileY }, .normals = .{ 0, 0, 1 } },
+
+                // --- BACK FACE ---
+                .{ .position = .{ -w, -h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, 0.0 }, .normals = .{ 0, 0, -1 } },
+                .{ .position = .{ -w, h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, tileY }, .normals = .{ 0, 0, -1 } },
+                .{ .position = .{ w, h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, tileY }, .normals = .{ 0, 0, -1 } },
+                .{ .position = .{ w, -h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ 0, 0, -1 } },
+
+                // --- LEFT FACE ---
+                .{ .position = .{ -w, -h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ -1, 0, 0 } },
+                .{ .position = .{ -w, -h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, 0.0 }, .normals = .{ -1, 0, 0 } },
+                .{ .position = .{ -w, h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, tileY }, .normals = .{ -1, 0, 0 } },
+                .{ .position = .{ -w, h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, tileY }, .normals = .{ -1, 0, 0 } },
+
+                // --- RIGHT FACE ---
+                .{ .position = .{ w, -h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, 0.0 }, .normals = .{ 1, 0, 0 } },
+                .{ .position = .{ w, h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, tileY }, .normals = .{ 1, 0, 0 } },
+                .{ .position = .{ w, h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, tileY }, .normals = .{ 1, 0, 0 } },
+                .{ .position = .{ w, -h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ 1, 0, 0 } },
+
+                // --- BOTTOM FACE ---
+                .{ .position = .{ -w, -h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, tileXZ }, .normals = .{ 0, -1, 0 } },
+                .{ .position = .{ w, -h, -d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, tileXZ }, .normals = .{ 0, -1, 0 } },
+                .{ .position = .{ w, -h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ tileXZ, 0.0 }, .normals = .{ 0, -1, 0 } },
+                .{ .position = .{ -w, -h, d }, .color = .{ 1, 1, 1, 1 }, .texture_coords = .{ 0.0, 0.0 }, .normals = .{ 0, -1, 0 } },
             };
-
-            for (faces) |n| {
-                for (0..4) |v| {
-                    const sx: f32 = if (v == 0 or v == 3) -0.5 else 0.5;
-                    const sy: f32 = if (v == 0 or v == 1) -0.5 else 0.5;
-
-                    // Better: use normal to decide which axis is constant
-                    var x = sx; var y = sy; var z: f32 = 0.5;
-                    if (n[0] != 0) { x = n[0] * 0.5; y = sy; z = sx; }  // left/right: constant X, vary Y and Z
-                    if (n[1] != 0) { y = n[1] * 0.5; x = sx; z = sy; }  // top/bottom: constant Y, vary X and Z
-                    if (n[2] != 0) { z = n[2] * 0.5; x = sx; y = sy; }  // front/back: constant Z, vary X and Y
-
-                    list[idx] = Vertex{
-                        .position = .{ x, y, z },
-                        .color = color,
-                        .texture_coords = .{
-                            if (v == 0 or v == 3) 0.0 else 1.0,
-                            if (v == 0 or v == 1) 0.0 else 1.0,
-                        },
-                        .normals = n,
-                    };
-                    idx += 1;
-                }
-            }
-
-            break :blk list;
         };
 
         const indices = comptime blk: {
