@@ -1,10 +1,16 @@
 const std = @import("std");
 const Window = @import("core/window.zig").Window;
 const event = @import("core/event.zig");
+const BlockMesh = @import("DEBUG/block.zig").BlockMesh;
+const Renderer = @import("graphics/renderer.zig").Renderer;
+const Shader = @import("graphics/shader.zig").Shader;
+
 
 pub const App = struct {
     window: *Window,
     allocator: std.mem.Allocator,
+    mesh1: BlockMesh,
+    shader1: Shader,
 
     pub fn init(allocator: std.mem.Allocator) !*App {
         const app = try allocator.create(App);
@@ -15,9 +21,16 @@ pub const App = struct {
             .height = null,
         });
 
+
+
         app.* = App{
             .window = window,
             .allocator = allocator,
+            .mesh1 = BlockMesh.init(),
+            .shader1 = try Shader.init(
+                @embedFile("shaders/common.vert.glsl"),
+                @embedFile("shaders/common.frag.glsl"),
+            ),
         };
 
         window.setEventCallback(app, eventCallback);
@@ -79,7 +92,10 @@ pub const App = struct {
     pub fn run(self: *App) void {
         while (!self.window.shouldCloseWindow()) {
             Window.HandleInput();
-            // Renderer.clear();
+            Renderer.clear();
+            self.mesh1.mesh.bind();
+            self.shader1.bind();
+            Renderer.drawMesh(&self.mesh1.mesh);
 
             self.window.swapBuffers();
         }
