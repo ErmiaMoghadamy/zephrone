@@ -56,10 +56,15 @@ pub const Window = struct {
 
 
         glfw.makeContextCurrent(window);
-        // Window.SetVsync(true);
+        Window.SetVsync(true);
 
 
         try zgl.loadCoreProfile(glfw.getProcAddress, 3, 3);
+
+        gl.enable(gl.CULL_FACE);
+        gl.enable(gl.DEPTH_TEST);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
         const win = try allocator.create(Window);
 
