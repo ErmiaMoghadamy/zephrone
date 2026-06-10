@@ -1,6 +1,6 @@
 const std = @import("std");
 const Window = @import("core/window.zig").Window;
-
+const event = @import("core/event.zig");
 
 pub const App = struct {
     window: *Window,
@@ -20,7 +20,7 @@ pub const App = struct {
             .allocator = allocator,
         };
 
-        // window.setEventCallback(app, eventCallback);
+        window.setEventCallback(app, eventCallback);
 
         return app;
     }
@@ -29,6 +29,51 @@ pub const App = struct {
         std.log.warn("shutting down app", .{});
         self.window.deinit(self.allocator);
         self.allocator.destroy(self);
+    }
+
+    pub fn eventCallback(self: *const App, ev: event.ZEvent) void {
+        _ = self;
+
+        switch (ev) {
+            .MouseMove => |me| {
+                std.log.debug("x={d} y={d}", .{me.x, me.y});
+            },
+            .MouseScroll => |x| {
+                _ = x;
+            },
+            .MouseReleased => |x| {
+                _ = x;
+            },
+            .KeyPressed => |x| {
+                _ = x;
+            },
+            .KeyRepeated => |x| {
+                _ = x;
+            },
+            .KeyReleased => |x| {
+                _ = x;
+            },
+            .MousePressed => |x| {
+                _ = x;
+            },
+            .CharInput => |x| {
+                _ = x;
+            },
+            .ContentScaleChange => |x| {
+                _ = x;
+            },
+            .FramebufferResize => |x| {
+                _ = x;
+            },
+            .WindowClose => |x| {
+                _ = x;
+            },
+            .WindowResize => |x| {
+                _ = x;
+            }
+        }
+
+        std.log.info("Event: {s}", .{@tagName(ev)});
     }
 
     pub fn run(self: *App) void {

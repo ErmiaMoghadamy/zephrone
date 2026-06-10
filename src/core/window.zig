@@ -2,7 +2,7 @@ const std = @import("std");
 const glfw = @import("zglfw");
 const zgl = @import("zopengl");
 const gl = zgl.bindings;
-// const event = @import("event.zig");
+const event = @import("event.zig");
 
 
 pub const WindowData = struct {
@@ -36,6 +36,8 @@ fn getDefaultHeight() !u32 {
 pub const Window = struct {
     window: *glfw.Window,
     data: WindowData,
+    event_fn: *const fn(*anyopaque, event.ZEvent) void = undefined,
+    event_ctx: *anyopaque = undefined,
 
     pub fn init(allocator: std.mem.Allocator, params: WindowParams) !*Window {
         std.log.info("starting up app", .{});
@@ -57,7 +59,6 @@ pub const Window = struct {
         // Window.SetVsync(true);
 
 
-
         try zgl.loadCoreProfile(glfw.getProcAddress, 3, 3);
 
         const win = try allocator.create(Window);
@@ -69,6 +70,12 @@ pub const Window = struct {
                 .height = height,
             },
         };
+
+        var fb_width: c_int = undefined;
+        var fb_height: c_int = undefined;
+        glfw.getFramebufferSize(window, &fb_width, &fb_height);
+        gl.viewport(0, 0, fb_width, fb_height);
+
 
         return win;
     }
@@ -89,5 +96,38 @@ pub const Window = struct {
 
     pub fn swapBuffers(self: *Window) void {
         glfw.swapBuffers(self.window);
+    }
+
+    pub fn SetVsync(value: bool) void {
+        glfw.swapInterval(@intFromBool(value));
+    }
+
+    pub fn setSize(self: *Window, width: u32, height: u32) void {
+        self.data.width = width;
+        self.data.height = height;
+    }
+
+    pub fn dispatchEvent(self: *Window, ev: event.ZEvent) void {
+        self.event_fn(self.event_ctx, ev);
+    }
+
+    pub fn setEventCallback(self: *Window, context: anytype, comptime callback: fn (@TypeOf(context), event.ZEvent) void) void {
+        const Ctx = @TypeOf(context);
+        self.event_fn = struct {
+            fn dispatch(ctx: *anyopaque, ev: event.ZEvent) void {
+                callback(@as(Ctx, @ptrCast(@alignCast(ctx))), ev);
+            }
+        }.dispatch;
+
+        self.event_ctx = @ptrCast(context);
+        glfw.setWindowUserPointer(self.window, @ptrCast(self));
+        _ = glfw.setMouseButtonCallback(self.window, event.mouseButtonCallback);
+        _ = glfw.setKeyCallback(self.window, event.keyButtonCallback);
+        _ = glfw.setCharCallback(self.window, event.charCallback);
+        _ = glfw.setWindowSizeCallback(self.window, event.windowResizeCallback);
+        _ = glfw.setFramebufferSizeCallback(self.window, event.frameBufferSizeCallback);
+        _ = glfw.setWindowContentScaleCallback(self.window, event.contentScaleCallback);
+        _ = glfw.setWindowCloseCallback(self.window, event.windowCloseCallback);
+        _ = glfw.setCursorPosCallback(self.window, event.cursorPosCallback);
     }
 };
