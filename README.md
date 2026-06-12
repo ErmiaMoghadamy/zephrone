@@ -3,7 +3,7 @@ A very simple real‑time 3D rendering engine built from scratch in Zig + OpenGL
 Designed to explore low‑level graphics programming, real‑time rendering techniques, and modern GPU pipeline design.
 
 <center>
-  <img src="Artifacts/screenshot_main.png" alt="Zephrone Engine (by ErmiaMoghadamys) Screenshot"/>
+  <img src="Artifact/screenshot_main.png" alt="Zephrone Engine (by ErmiaMoghadamys) Screenshot"/>
 </center>
 
 ## Overview
