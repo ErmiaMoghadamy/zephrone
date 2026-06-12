@@ -24,6 +24,8 @@ As mentioned earlier, the motivation started the day I wondered how computers de
 ## Key Features
 - [X] Custom OpenGL abstraction layer
 - [X] Shader management system
+- [X] Modular Event System
+- [X] Singleton Input State
 - [ ] Resource lifetime management
 - [ ] Scene graph or ECS
 - [X] Debug visualization tools
