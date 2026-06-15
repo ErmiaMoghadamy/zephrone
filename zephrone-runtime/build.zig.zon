@@ -1,7 +1,7 @@
 .{
-    .name = .zephrone,
+    .name = .zephrone_runtime,
     .version = "0.0.0",
-    .fingerprint = 0x674737ca68eec52e, // Changing this has security and trust implications.
+    .fingerprint = 0x1e03bcacb93e029d, // Changing this has security and trust implications.
     .minimum_zig_version = "0.16.0",
     .dependencies = .{
         .zopengl = .{

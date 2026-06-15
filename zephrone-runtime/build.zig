@@ -4,7 +4,7 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const mod = b.addModule("zephrone", .{
+    const mod = b.addModule("zephrone_runtime", .{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
     });
@@ -45,13 +45,13 @@ pub fn build(b: *std.Build) void {
     mod.addImport("zmath", zmath.module("root"));
 
     const exe = b.addExecutable(.{
-        .name = "zephrone",
+        .name = "zephrone_runtime",
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/main.zig"),
             .target = target,
             .optimize = optimize,
             .imports = &.{
-                .{ .name = "zephrone", .module = mod },
+                .{ .name = "zephrone_runtime", .module = mod },
             },
         }),
     });

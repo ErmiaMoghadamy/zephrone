@@ -12,6 +12,7 @@ const Lamp = @import("DEBUG/lamp.zig").Lamp;
 const Input = @import("core/input.zig").InputManager;
 const Time = @import("core/time.zig").Time;
 
+
 pub const App = struct {
     window: *Window,
     allocator: std.mem.Allocator,
@@ -44,7 +45,7 @@ pub const App = struct {
                 @embedFile("shaders/lit.vert.glsl"),
                 @embedFile("shaders/lit.frag.glsl"),
             ),
-            .texture1 = try Texture.init(io, allocator, "assets/floor.png", 0),
+            .texture1 = try Texture.init(io, allocator, "../assets/floor.png", 0),
             .lamp1 = try Lamp.init(),
         };
 
