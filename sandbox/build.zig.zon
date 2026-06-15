@@ -5,7 +5,7 @@
     .minimum_zig_version = "0.16.0",
     .dependencies = .{
         .zephrone_runtime = .{
-            .path = "../zephrone-runtime",
+            .path = "../zephrone",
         }
     },
     .paths = .{
