@@ -91,6 +91,10 @@ pub const Window = struct {
         allocator.destroy(self);
     }
 
+    pub fn GetTime() f32 {
+        return @floatCast(glfw.getTime());
+    }
+
     pub fn shouldCloseWindow(self: *Window) bool {
         return glfw.windowShouldClose(self.window);
     }
