@@ -16,3 +16,17 @@ pub const Time = struct {
         self.last_frame = current_time;
     }
 };
+
+
+test "Time Initialization" {
+    const time = Time.init();
+    try std.testing.expectEqual(@as(f32, 0.0), time.delta_time);
+    try std.testing.expectEqual(@as(f32, 0.0), time.last_frame);
+}
+
+test "Time Update" {
+    var time = Time.init();
+    time.update(0.016);
+
+    try std.testing.expectApproxEqAbs(@as(f32, 0.016), time.delta_time, 0.0001);
+}

@@ -10,3 +10,7 @@ pub fn run(io: std.Io) !void {
 
     app.run();
 }
+
+test {
+    @import("std").testing.refAllDecls(@This());
+}

@@ -107,7 +107,7 @@ pub const InputManager = struct {
 
     pub fn IsKeyReleased(key: glfw.Key) bool {
         const self = getInstance();
-        const k: usize = @intFromEnum(key);
+        const k: usize = @intCast(@intFromEnum(key));
         return self.released_keys[k];
     }
 
@@ -159,3 +159,63 @@ pub const InputManager = struct {
         return self.mouse_delta;
     }
 };
+
+
+test "InputManager Initialization" {
+    InputManager.Clear();
+
+    const self = InputManager.getInstance();
+
+    try std.testing.expectEqual(@as(f32, 0.0), self.mouse_pos.x);
+    try std.testing.expectEqual(@as(f32, 0.0), self.mouse_pos.y);
+    try std.testing.expectEqual(@as(f32, 0.0), self.mouse_scroll.x);
+    try std.testing.expectEqual(@as(f32, 0.0), self.mouse_scroll.y);
+
+    for (self.pressed_keys) |key| {
+        try std.testing.expect(!key);
+    }
+
+    for (self.released_keys) |key| {
+        try std.testing.expect(!key);
+    }
+
+    for (self.held_keys) |key| {
+        try std.testing.expect(!key);
+    }
+
+    for (self.pressed_buttons) |key| {
+        try std.testing.expect(!key);
+    }
+
+    for (self.released_buttons) |key| {
+        try std.testing.expect(!key);
+    }
+}
+
+test "InputMager keypress detection" {
+    InputManager.Clear();
+
+    const ez = event.ZEvent{ .KeyPressed = glfw.Key.a };
+
+    InputManager.Update(ez);
+
+    try std.testing.expect(InputManager.IsKeyPressed(.a));
+    try std.testing.expect(InputManager.IsKeyHeld(.a));
+    try std.testing.expect(!InputManager.IsKeyReleased(.a));
+    try std.testing.expect(!InputManager.IsKeyPressed(.b));
+}
+
+
+test "InputMager kerelease detection" {
+    InputManager.Clear();
+
+    const press_event = event.ZEvent{ .KeyPressed = glfw.Key.a };
+    InputManager.Update(press_event);
+    try std.testing.expect(InputManager.IsKeyPressed(.a));
+
+
+    InputManager.Clear();
+    const release_event = event.ZEvent{ .KeyReleased = glfw.Key.a };
+    InputManager.Update(release_event);
+    try std.testing.expect(InputManager.IsKeyReleased(.a));
+}

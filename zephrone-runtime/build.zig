@@ -44,49 +44,16 @@ pub fn build(b: *std.Build) void {
     mod.addImport("zstbi", zstbi.module("root"));
     mod.addImport("zmath", zmath.module("root"));
 
-    const exe = b.addExecutable(.{
-        .name = "zephrone_runtime",
-        .root_module = b.createModule(.{
-            .root_source_file = b.path("src/main.zig"),
-            .target = target,
-            .optimize = optimize,
-            .imports = &.{
-                .{ .name = "zephrone_runtime", .module = mod },
-            },
-        }),
-    });
-
-    exe.root_module.addImport("zopengl", zopengl.module("root"));
-    exe.root_module.addImport("zgui", zgui.module("root"));
-    exe.root_module.addImport("zstbi", zstbi.module("root"));
-    exe.root_module.addImport("zmath", zmath.module("root"));
-
-    b.installArtifact(exe);
-
-    const run_step = b.step("run", "Run the app");
-
-    const run_cmd = b.addRunArtifact(exe);
-    run_step.dependOn(&run_cmd.step);
-
-    run_cmd.step.dependOn(b.getInstallStep());
-
-    if (b.args) |args| {
-        run_cmd.addArgs(args);
-    }
-
-    const mod_tests = b.addTest(.{
+    const lib_unit_test = b.addTest(.{
         .root_module = mod,
     });
 
-    const run_mod_tests = b.addRunArtifact(mod_tests);
+    lib_unit_test.root_module.linkLibrary(zglfw.artifact("glfw"));
+    lib_unit_test.root_module.linkLibrary(zopengl.artifact("zopengl"));
+    lib_unit_test.root_module.linkLibrary(zgui.artifact("imgui"));
 
-    const exe_tests = b.addTest(.{
-        .root_module = exe.root_module,
-    });
+    const run_lib_unit_test = b.addRunArtifact(lib_unit_test);
 
-    const run_exe_tests = b.addRunArtifact(exe_tests);
-
-    const test_step = b.step("test", "Run tests");
-    test_step.dependOn(&run_mod_tests.step);
-    test_step.dependOn(&run_exe_tests.step);
+    const test_step = b.step("test", "Run unit tests");
+    test_step.dependOn(&run_lib_unit_test.step);
 }
