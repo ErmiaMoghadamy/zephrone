@@ -1,8 +1,17 @@
 const std = @import("std");
-const Io = std.Io;
-
-const zp = @import("zephrone_runtime");
+const sandbox = @import("sandbox_app");
+const App = @import("zephrone_runtime").App;
+const Game = @import("game.zig").Game;
 
 pub fn main(init: std.process.Init) !void {
-    try zp.run(init.io);
+    var gpa = std.heap.DebugAllocator(.{}){};
+
+    defer _ = gpa.allocator();
+
+    const RuntimeApp = App(Game);
+
+    var app = try RuntimeApp.init(init.io, gpa.allocator());
+    defer app.deinit();
+
+    try app.run();
 }
