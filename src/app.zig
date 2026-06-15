@@ -10,11 +10,14 @@ const Camera = @import("core/camera.zig").Camera;
 const Texture = @import("graphics/texture.zig").Texture;
 const Lamp = @import("DEBUG/lamp.zig").Lamp;
 const Input = @import("core/input.zig").InputManager;
+const Time = @import("core/time.zig").Time;
 
 pub const App = struct {
     window: *Window,
     allocator: std.mem.Allocator,
     io: std.Io,
+    time: Time,
+
     mesh1: BlockMesh,
     shader1: Shader,
     camera1: Camera,
@@ -34,6 +37,7 @@ pub const App = struct {
             .window = window,
             .allocator = allocator,
             .io = io,
+            .time = Time.init(),
             .camera1 = Camera.init(@as(f32, @floatFromInt(window.data.width)) / @as(f32, @floatFromInt(window.data.height))),
             .mesh1 = BlockMesh.init(),
             .shader1 = try Shader.init(
@@ -79,19 +83,19 @@ pub const App = struct {
     }
 
     pub fn tempShit(self: *App) void {
-        const amp: f32 = 0.08;
+        const amp: f32 = 8;
 
-        if (Input.IsKeyHeld(.w)) self.camera1.moveZ(-amp);
+        if (Input.IsKeyHeld(.w)) self.camera1.moveZ(-amp * self.time.delta_time);
 
-        if (Input.IsKeyHeld(.s)) self.camera1.moveZ(amp);
+        if (Input.IsKeyHeld(.s)) self.camera1.moveZ(amp * self.time.delta_time);
 
-        if (Input.IsKeyHeld(.a)) self.camera1.moveX(-amp);
+        if (Input.IsKeyHeld(.a)) self.camera1.moveX(-amp * self.time.delta_time);
 
-        if (Input.IsKeyHeld(.d)) self.camera1.moveX(amp);
+        if (Input.IsKeyHeld(.d)) self.camera1.moveX(amp * self.time.delta_time);
 
-        if (Input.IsKeyHeld(.q)) self.camera1.yaw += -amp*0.3;
+        if (Input.IsKeyHeld(.q)) self.camera1.yaw += -amp*0.3 * self.time.delta_time;
 
-        if (Input.IsKeyHeld(.e)) self.camera1.yaw += amp*0.3;
+        if (Input.IsKeyHeld(.e)) self.camera1.yaw += amp*0.3 * self.time.delta_time;
 
         self.camera1.updateView();
         self.camera1.updateProjection();
@@ -102,7 +106,12 @@ pub const App = struct {
     pub fn run(self: *App) void {
         while (!self.window.shouldCloseWindow()) {
             Window.HandleInput();
+
+            self.time.update(@floatCast(Window.GetTime()));
+
             self.tempShit();
+
+            // START:   Scene
             Renderer.clear();
 
             self.lamp1.bindToCamera(&self.camera1);
@@ -123,6 +132,7 @@ pub const App = struct {
             self.shader1.set_vec4("u_camera_pos", @bitCast(self.camera1.position));
 
             Renderer.drawMesh(&self.mesh1.mesh);
+            // END:     Scene
 
             self.window.swapBuffers();
         }
