@@ -12,6 +12,10 @@ This isn't meant to be the next Godot or replace anything; it's built for me to 
 ## Motivation
 As mentioned earlier, the motivation started the day I wondered how computers deal with graphics. Although it was quite complicated for me as a young student, I find graphics pipelines very interesting. I also heard from a professional: "Writing a graphics engine is easier than using one, but only if you know how to construct programs."
 
+## How to run the **sandbox**
+```
+zig build run-sandbox
+```
 
 ## Design Goals
 - Explicit control over GPU resources
