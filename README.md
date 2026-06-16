@@ -30,8 +30,8 @@ zig build run-sandbox
 - [X] Shader management system
 - [X] Modular Event System
 - [X] Singleton Input State
+- [X] Domain seperation Sandbox & Engine
 - [ ] Resource lifetime management
-- [ ] Scene graph or ECS
 - [X] Debug visualization tools
 
 
