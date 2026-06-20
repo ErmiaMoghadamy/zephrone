@@ -1,0 +1,16 @@
+## ENGINE TODO
+- ReStructure 
+  - [ ] ReConsider Core, Graphics, ...
+- Better Lightings
+  - [X] Point Light
+  - [ ] Sun/Dir Light
+  - [ ] Directional Light
+  - [ ] Spot Light
+- Better AssetManagement
+  - [ ] Material Abstraction
+  - [ ] Model Abstraction
+  - [ ] The AssetManager Singleton
+- Service Abstractions
+  - [ ] Image Loader Service Instead of STBI
+  - [ ] Model Loader Service Instead of GLB
+  - [ ]
