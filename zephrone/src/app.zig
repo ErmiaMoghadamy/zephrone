@@ -44,6 +44,7 @@ pub fn App(comptime GameType: type) type {
 
         pub fn deinit(self: *Self) void {
             std.log.warn("shutting down app instance", .{});
+
             self.game.deinit();
             self.window.deinit(self.allocator);
             self.allocator.destroy(self);
@@ -55,24 +56,15 @@ pub fn App(comptime GameType: type) type {
 
             _ = self;
 
-            switch (ev) {
-                .WindowResize => |x| {
-                    _ = x;
-                    // const aspect = @as(f32, @floatFromInt(x.width)) / @as(f32, @floatFromInt(x.height));
-                    // self.game..updateAspect(aspect);
-                    // self.camera1.updateProjection();
-                    // _ =
-                    // self.camera1.updateView();
-                },
-                else => {}
-            }
-
             std.log.info("Event: {s}", .{@tagName(ev)});
         }
 
         pub fn run(self: *Self) !void {
+            try self.game.bootstrap();
+
             while (!self.window.shouldCloseWindow()) {
                 Window.HandleInput();
+
                 self.time.update(@floatCast(Window.GetTime()));
 
                 const aspect = @as(f32, @floatFromInt(self.window.data.width)) / @as(f32, @floatFromInt(self.window.data.height));
