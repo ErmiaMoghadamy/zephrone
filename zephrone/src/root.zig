@@ -5,6 +5,7 @@ pub const Window = @import("./core/window.zig").Window;
 pub const Input = @import("./core/input.zig").InputManager;
 pub const Shader = @import("./graphics/shader.zig").Shader;
 pub const Mesh = @import("./graphics/mesh.zig").Mesh;
+pub const Model = @import("./graphics/model.zig").Model;
 pub const Texture = @import("./graphics/texture.zig").Texture;
 pub const Transform = @import("./graphics/transform.zig").Transform;
 pub const Renderer = @import("./graphics/renderer.zig").Renderer;
