@@ -1,4 +1,5 @@
 const std = @import("std");
+const zm = @import("zephrone_runtime").zmath;
 const GameScene = @import("scene.zig").GameScene;
 
 pub const Game = struct {
@@ -16,6 +17,17 @@ pub const Game = struct {
 
     pub fn deinit(self: *Game) void {
         self.current_scene.deinit();
+    }
+
+    pub fn updateAspect(self: *Game, aspect: f32) void {
+        // self.current_scene.camera1.updateAspect(aspect);
+        _ = self;
+        _ = aspect;
+
+    }
+
+    pub fn bootstrap(self: *Game) !void {
+        self.current_scene.trans2.rotation = zm.f32x4(1.57, 3.14, 0.0, 0.0);
     }
 
     pub fn update(self: *Game, dt: f32, aspect: f32) !void {
