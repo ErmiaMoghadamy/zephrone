@@ -1,5 +1,6 @@
 const std = @import("std");
 const zm = @import("zephrone_runtime").zmath;
+const FrameContext = @import("zephrone_runtime").platform.FrameContext;
 const GameScene = @import("scene.zig").GameScene;
 
 pub const Game = struct {
@@ -30,8 +31,8 @@ pub const Game = struct {
         self.current_scene.trans2.rotation = zm.f32x4(1.57, 3.14, 0.0, 0.0);
     }
 
-    pub fn update(self: *Game, dt: f32, aspect: f32) !void {
-        self.current_scene.update(dt, aspect);
+    pub fn update(self: *Game, frame_ctx: FrameContext) !void {
+        self.current_scene.update(frame_ctx.dt, frame_ctx.aspect);
     }
 
     pub fn render(self: *Game) !void {

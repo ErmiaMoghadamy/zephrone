@@ -1,5 +1,5 @@
-const Mesh = @import("zephrone_runtime").Mesh;
-const Vertex = @import("zephrone_runtime").Vertex;
+const Mesh = @import("zephrone_runtime").graphics.Mesh;
+const Vertex = @import("zephrone_runtime").graphics.buffer.Vertex;
 
 pub const BlockMesh = struct {
     mesh: Mesh,

@@ -1,8 +1,8 @@
 const zm = @import("zephrone_runtime").zmath;
-const Transform = @import("zephrone_runtime").Transform;
-const Shader = @import("zephrone_runtime").Shader;
-const Mesh = @import("zephrone_runtime").Mesh;
-const Camera = @import("zephrone_runtime").Camera;
+const Transform = @import("zephrone_runtime").core.Transform;
+const Shader = @import("zephrone_runtime").graphics.Shader;
+const Mesh = @import("zephrone_runtime").graphics.Mesh;
+const Camera = @import("zephrone_runtime").scene.Camera;
 const BlockMesh = @import("block.zig").BlockMesh;
 
 pub const Lamp = struct {

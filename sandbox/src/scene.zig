@@ -1,14 +1,14 @@
 const std = @import("std");
 const zm = @import("zephrone_runtime").zmath;
-const Input = @import("zephrone_runtime").Input;
-const Renderer = @import("zephrone_runtime").Renderer;
-const Camera = @import("zephrone_runtime").Camera;
-const Shader = @import("zephrone_runtime").Shader;
-const Texture = @import("zephrone_runtime").Texture;
+const Input = @import("zephrone_runtime").services.InputService;
+const Renderer = @import("zephrone_runtime").graphics.Renderer;
+const Camera = @import("zephrone_runtime").scene.Camera;
+const Shader = @import("zephrone_runtime").graphics.Shader;
+const Texture = @import("zephrone_runtime").graphics.Texture;
 const Lamp = @import("entities/lamp.zig").Lamp;
 const BlockMesh = @import("entities/block.zig").BlockMesh;
-const Model = @import("zephrone_runtime").Model;
-const Transform = @import("zephrone_runtime").Transform;
+const Model = @import("zephrone_runtime").core.Model;
+const Transform = @import("zephrone_runtime").core.Transform;
 
 
 pub const GameScene = struct {
