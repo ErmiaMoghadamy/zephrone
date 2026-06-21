@@ -1,5 +1,6 @@
 const std = @import("std");
 const event = @import("./event.zig");
+const glfw = @import("zglfw");
 const Window = @import("./window.zig").Window;
 const WindowParams = @import("./window.zig").WindowParams;
 const Time = @import("./time.zig").Time;
@@ -47,6 +48,7 @@ pub const Platform = struct {
 
     pub fn flush(self: *Platform) void {
         self.window.swapBuffers();
+        InputService.Clear();
     }
 
     pub fn alive(self: *Platform) bool {
@@ -64,9 +66,13 @@ pub const Platform = struct {
 
     pub fn eventCallback(self: *Platform, ev: event.ZEvent) void {
         InputService.Update(ev);
-        InputService.Clear();
 
-        _ = self;
+        if (InputService.IsKeyReleased(.escape)) {
+            std.log.err("Escape key pressed", .{});
+            glfw.setWindowShouldClose(self.window.window, true);
+        }
+
+
         std.log.info("Event: {s}", .{@tagName(ev)});
     }
 };

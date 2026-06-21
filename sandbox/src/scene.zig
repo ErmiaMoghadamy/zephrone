@@ -43,8 +43,6 @@ pub const GameScene = struct {
     pub fn update(self: *GameScene, dt: f32, aspect: f32) void {
         const amp: f32 = 8.0;
 
-        if (Input.IsKeyHeld(.escape)) @panic("fuck");
-
         if (Input.IsKeyHeld(.w)) self.camera1.moveZ(-amp * dt);
         if (Input.IsKeyHeld(.s)) self.camera1.moveZ(amp * dt);
         if (Input.IsKeyHeld(.a)) self.camera1.moveX(-amp * dt);

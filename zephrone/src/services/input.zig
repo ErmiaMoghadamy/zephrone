@@ -219,3 +219,16 @@ test "InputService kerelease detection" {
     InputService.Update(release_event);
     try std.testing.expect(InputService.IsKeyReleased(.a));
 }
+
+test "released key cannot be pressed simultaneously" {
+    InputService.Clear();
+
+    const key = glfw.Key.a;
+
+    InputService.Update(.{ .KeyPressed = key });
+    InputService.Update(.{ .KeyReleased = key });
+
+    try std.testing.expect(!InputService.IsKeyPressed(key));
+    try std.testing.expect(InputService.IsKeyReleased(key));
+    try std.testing.expect(!InputService.IsKeyHeld(key));
+}
