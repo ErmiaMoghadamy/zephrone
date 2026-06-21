@@ -1,4 +1,6 @@
-# Zephrone Engine (currently under development)
+# Zephrone Engine
+**Game-injected Runtime Host pattern**
+
 A very simple real‑time 3D rendering engine built from scratch in Zig + OpenGL.
 Designed to explore low‑level graphics programming, real‑time rendering techniques, and modern GPU pipeline design.
 
