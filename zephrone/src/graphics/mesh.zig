@@ -1,8 +1,8 @@
 const gl = @import("zopengl").bindings;
-const VertexBuffer = @import("buffer.zig").VertexBuffer;
-const IndexBuffer = @import("buffer.zig").IndexBuffer;
-const VertexArray = @import("vertex_array.zig").VertexArray;
-const Vertex = @import("vertex_array.zig").Vertex;
+const VertexBuffer = @import("./buffer.zig").VertexBuffer;
+const IndexBuffer = @import("./buffer.zig").IndexBuffer;
+const VertexArray = @import("./buffer.zig").VertexArray;
+const Vertex = @import("./buffer.zig").Vertex;
 
 pub const Mesh = struct {
     vbo: VertexBuffer,
