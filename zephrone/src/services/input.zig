@@ -59,7 +59,7 @@ pub const InputService = struct {
                 self.mouse_delta.x = move_event.x - self.mouse_pos.x;
                 self.mouse_delta.y = move_event.y - self.mouse_pos.y;
                 self.mouse_pos.x = move_event.x;
-                self.mouse_pos.y = move_event.x;
+                self.mouse_pos.y = move_event.y;
             },
             .MouseScroll => |scroll_event| {
                 self.mouse_scroll.x += scroll_event.x;

@@ -1,4 +1,5 @@
 const Mesh = @import("zephrone_runtime").graphics.Mesh;
+const Transform = @import("zephrone_runtime").core.Transform;
 const Vertex = @import("zephrone_runtime").graphics.buffer.Vertex;
 
 pub const BlockMesh = struct {
@@ -67,6 +68,16 @@ pub const BlockMesh = struct {
 
         return BlockMesh{
             .mesh = Mesh.init(&vertices, &indices),
+        };
+    }
+};
+
+pub const Block = struct {
+    transform: Transform,
+
+    pub fn init() Block {
+        return .{
+            .transform = Transform.init(),
         };
     }
 };

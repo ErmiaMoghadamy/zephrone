@@ -17,6 +17,8 @@ pub const PlatformConfig = struct {
 pub const Platform = struct {
     window: *Window,
     time: Time,
+    allocator: std.mem.Allocator,
+    event_queue: std.ArrayList(event.ZEvent),
 
     pub fn init(allocator: std.mem.Allocator, params: WindowParams) !*Platform {
         const platform = try allocator.create(Platform);
@@ -27,9 +29,12 @@ pub const Platform = struct {
         platform.* = .{
             .window = window,
             .time = Time.init(),
+            .allocator = allocator,
+            .event_queue = .empty,
         };
 
         window.setEventCallback(platform, eventCallback);
+        try window.window.setInputMode(.cursor, .disabled);
 
         return platform;
     }
@@ -72,7 +77,8 @@ pub const Platform = struct {
             glfw.setWindowShouldClose(self.window.window, true);
         }
 
-
-        std.log.info("Event: {s}", .{@tagName(ev)});
+        // self.event_queue.append(self.allocator, ev) catch |err| {
+        //     std.log.err("Failed to queue event: {}", .{err});
+        // };
     }
 };

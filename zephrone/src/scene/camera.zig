@@ -15,7 +15,7 @@ pub const Camera = struct {
     yaw: f32 = -std.math.pi / 2.0,
     pitch: f32 = 0.0,
     look_dist: f32 = 1.0,
-    sensitivity: f32 = 0.0020,
+    sensitivity: f32 = 0.0030,
 
     fov: f32,
     near: f32,
@@ -81,12 +81,29 @@ pub const Camera = struct {
     }
 
     pub fn rotateByMouse(self: *Camera, dx: f32, dy: f32) void {
-        self.yaw += dx * self.sensitivity;
-        self.pitch += dy * self.sensitivity;
+        const invert_y: bool = false;
 
-        const limit: f32 = 1.553343; // ~89 degrees
-        if (self.pitch > limit) self.pitch = limit;
-        if (self.pitch < -limit) self.pitch = -limit;
+        self.yaw += dx * self.sensitivity;
+
+        const two_pi = std.math.pi * 2.0;
+        self.yaw = @mod(self.yaw, two_pi);
+        if (self.yaw < 0.0) {
+            self.yaw += two_pi;
+        }
+
+        if (invert_y) {
+            self.pitch += dy * self.sensitivity;
+        } else {
+            self.pitch -= dy * self.sensitivity;
+        }
+
+        const max_pitch_rad = 89.0 * (std.math.pi / 180.0);
+
+        if (std.math.isNan(self.pitch)) {
+            self.pitch = 0.0;
+        } else {
+            self.pitch = std.math.clamp(self.pitch, -max_pitch_rad, max_pitch_rad);
+        }
 
         self.updateView();
     }

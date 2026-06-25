@@ -1,5 +1,8 @@
 const gl = @import("zopengl").bindings;
 const Mesh = @import("mesh.zig").Mesh;
+const VertexBuffer = @import("buffer.zig").VertexBuffer;
+const zm = @import("zmath");
+
 
 pub const Renderer = struct {
     pub fn init() !Renderer {
@@ -19,4 +22,5 @@ pub const Renderer = struct {
         mesh.bind();
         gl.drawElements(gl.TRIANGLES, mesh.index_count, gl.UNSIGNED_INT, null);
     }
+
 };

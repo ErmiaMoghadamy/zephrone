@@ -35,17 +35,15 @@ pub fn App(comptime GameType: type) type {
         pub fn deinit(self: *Self) void {
             std.log.warn("Destroying App Instance", .{});
 
-            self.game.deinit();
+            self.game.deinit(self.allocator);
             self.platform.deinit(self.allocator);
         }
 
-
         pub fn run(self: *Self) !void {
-            try self.game.bootstrap();
+            try self.game.bootstrap(self.allocator);
 
             while (self.platform.alive()) {
                 self.platform.pump();
-
 
                 try self.game.update(self.platform.context());
                 try self.game.render();

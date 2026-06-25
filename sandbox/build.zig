@@ -23,6 +23,9 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
+    exe.root_module.addImport("zephrone_runtime", runtime_mod);
+    exe.use_lld = false;
+
     b.installArtifact(exe);
 
     const run_step = b.step("run", "Run the app");
