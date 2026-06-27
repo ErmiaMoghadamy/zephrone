@@ -109,6 +109,19 @@ pub fn cursorPosCallback(window: *glfw.Window, x: f64, y: f64) callconv(.c) void
     win.dispatchEvent(ev);
 }
 
+pub fn scrollCallback(window: *glfw.Window, xoffset: f64, yoffset: f64) callconv(.c) void {
+    const win = getWindowFromGLFW(window);
+
+    const ev = ZEvent{
+        .MouseScroll = .{
+            .x = @floatCast(xoffset),
+            .y = @floatCast(yoffset),
+        },
+    };
+
+    win.dispatchEvent(ev);
+}
+
 pub fn charCallback(window: *glfw.Window, codepoint: c_uint) callconv(.c) void {
     const win = getWindowFromGLFW(window);
     const ev = ZEvent{ .CharInput = @intCast(codepoint) };
