@@ -5,6 +5,7 @@ pub const platform = @import("./platform/root.zig");
 pub const scene = @import("./scene/root.zig");
 pub const services = @import("./services/root.zig");
 pub const zmath = @import("zmath");
+pub const gl = @import("zopengl").bindings;
 
 test {
     @import("std").testing.refAllDecls(@This());
