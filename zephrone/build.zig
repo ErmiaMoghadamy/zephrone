@@ -27,7 +27,7 @@ pub fn build(b: *std.Build) void {
     });
 
     const zgui = b.dependency("zgui", .{
-        .shared = false,
+        .shared = true,
         .with_implot = true,
         .backend = .glfw_opengl3,
     });
