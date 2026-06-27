@@ -1,6 +1,6 @@
 ## ENGINE TODO
 - ReStructure 
-  - [ ] ReConsider Core, Graphics, ...
+  - [X] ReConsider Core, Graphics, ...
 - Better Lightings
   - [X] Point Light
   - [ ] Sun/Dir Light
@@ -8,11 +8,11 @@
   - [ ] Spot Light
 - Better AssetManagement
   - [ ] Material Abstraction
-  - [ ] Model Abstraction
+  - [X] Model Abstraction
   - [ ] The AssetManager Singleton
 - Service Abstractions
   - [ ] Image Loader Service Instead of STBI
   - [ ] Model Loader Service Instead of GLB
 - Fucking Debugger
   - [ ] SandBox Debugger
-  - [ ] Runtime Debugger
+  - [X] Runtime Debugger
