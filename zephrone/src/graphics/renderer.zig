@@ -1,16 +1,20 @@
+const zm = @import("zmath");
 const gl = @import("zopengl").bindings;
 const Mesh = @import("mesh.zig").Mesh;
 const VertexBuffer = @import("buffer.zig").VertexBuffer;
-const zm = @import("zmath");
-
+const RendererContext = @import("./context.zig").RenderContext;
 
 pub const Renderer = struct {
-    pub fn init() !Renderer {
-        return Renderer{};
+    context: RendererContext,
+
+    pub fn init() Renderer {
+        return Renderer{
+            .context = RendererContext.init(),
+        };
     }
 
     pub fn deinit(self: *Renderer) void {
-        _ = self;
+        self.context.deinit();
     }
 
     pub fn clear() void {
