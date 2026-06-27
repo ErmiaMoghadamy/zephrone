@@ -2,6 +2,7 @@ const std = @import("std");
 const zm = @import("zephrone_runtime").zmath;
 const event = @import("zephrone_runtime").platform.event;
 const FrameContext = @import("zephrone_runtime").platform.FrameContext;
+const Renderer = @import("zephrone_runtime").graphics.Renderer;
 const GameScene = @import("scene.zig").GameScene;
 
 pub const Game = struct {
@@ -29,7 +30,7 @@ pub const Game = struct {
         self.current_scene.update(frame_ctx.dt, frame_ctx.aspect);
     }
 
-    pub fn render(self: *Game) !void {
-        self.current_scene.draw();
+    pub fn render(self: *Game, renderer: *Renderer) !void {
+        self.current_scene.draw(renderer);
     }
 };
