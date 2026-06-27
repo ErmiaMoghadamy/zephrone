@@ -21,7 +21,7 @@ pub const GameScene = struct {
     camera1: Camera,
     model1: Model,
     model2: Model,
-    items: std.ArrayList(Block),
+    items: std.ArrayList(Transform),
     instance_vbo: InstanceBuffer,
 
     pub fn init(io: std.Io, allocator: std.mem.Allocator, initial_aspect: f32) !GameScene {
@@ -44,49 +44,13 @@ pub const GameScene = struct {
     }
 
     pub fn bootstrap(self: *GameScene, allocator: std.mem.Allocator) !void {
-        const loc = 4;
-
-        self.model1.meshes[0].bind();
-        self.model1.meshes[0].vao.bind();
-        self.instance_vbo.bind();
-
-        const stride: isize = @sizeOf([16]f32);
-
-        // column 0
-        gl.enableVertexAttribArray(loc + 0);
-        gl.vertexAttribPointer(loc + 0, 4, gl.FLOAT, gl.FALSE, stride, @ptrFromInt(0));
-        gl.vertexAttribDivisor(loc + 0, 1);
-
-        // column 1
-        gl.enableVertexAttribArray(loc + 1);
-        gl.vertexAttribPointer(loc + 1, 4, gl.FLOAT, gl.FALSE, stride, @ptrFromInt(@sizeOf([4]f32)));
-        gl.vertexAttribDivisor(loc + 1, 1);
-
-        // column 2
-        gl.enableVertexAttribArray(loc + 2);
-        gl.vertexAttribPointer(loc + 2, 4, gl.FLOAT, gl.FALSE, stride, @ptrFromInt(@sizeOf([8]f32)));
-        gl.vertexAttribDivisor(loc + 2, 1);
-
-        // column 3
-        gl.enableVertexAttribArray(loc + 3);
-        gl.vertexAttribPointer(loc + 3, 4, gl.FLOAT, gl.FALSE, stride, @ptrFromInt(@sizeOf([12]f32)));
-        gl.vertexAttribDivisor(loc + 3, 1);
-
-        const max_instances = 100000;
-        gl.bufferData(
-            gl.ARRAY_BUFFER,
-            @sizeOf([16]f32) * max_instances,
-            null,
-            gl.DYNAMIC_DRAW
-        );
-
         for (0..32) |i| {
             for (0..64) |k| {
                 for (0..18) |j| {
-                    var block = Block.init();
-                    block.transform.position[0] += 2 * (@as(f32, @floatFromInt(i)) - 16);
-                    block.transform.position[1] += -2 * (@as(f32, @floatFromInt(j)));
-                    block.transform.position[2] += 2 * (@as(f32, @floatFromInt(k)) - 16);
+                    var block = Transform.init();
+                    block.position[0] += 2 * (@as(f32, @floatFromInt(i)) - 16);
+                    block.position[1] += -2 * (@as(f32, @floatFromInt(j)));
+                    block.position[2] += 2 * (@as(f32, @floatFromInt(k)) - 16);
                     try self.items.append(allocator, block);
                 }
             }
@@ -129,7 +93,7 @@ pub const GameScene = struct {
         if (Input.IsKeyHeld(.g)) self.lamp1.transform.translate(zm.f32x4(0.0, -amp*dt, 0.0, 0.0));
     }
 
-    pub fn draw(self: *GameScene, _: *Renderer) void {
+    pub fn draw(self: *GameScene, renderer: *Renderer) void {
         Renderer.clear();
 
         self.lamp1.mesh.bind();
@@ -152,34 +116,11 @@ pub const GameScene = struct {
         self.texture1.bind();
 
 
-        var models: [100000][16]f32 = undefined;
-
-        const count = self.items.items.len;
-
-        for (self.items.items, 0..) |*item, i| {
-            models[i] = @bitCast(item.transform.getModel());
-        }
-
-        self.instance_vbo.bind();
-
-
-        gl.bufferSubData(
-            gl.ARRAY_BUFFER,
-            0,
-            @as(isize, @intCast(@sizeOf([16]f32) * count)),
-            @ptrCast(&models[0]),
-        );
-
         self.model1.meshes[0].bind();
         self.shader1.bind();
 
-        gl.drawElementsInstanced(
-            gl.TRIANGLES,
-            self.model1.meshes[0].index_count,
-            gl.UNSIGNED_INT,
-            null,
-            @intCast(count),
-        );
+
+        renderer.drawMeshInstanced(&self.model1.meshes[0], self.items.items);
 
     }
 };
