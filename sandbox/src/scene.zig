@@ -57,17 +57,21 @@ pub const GameScene = struct {
     pub fn update(self: *GameScene, dt: f32, aspect: f32) void {
         const delta = Input.GetMouseMoveDelta();
 
-        self.camera1.rotateByMouse(delta.x, delta.y);
+        std.debug.print("{any}\n", .{Input.GetMouseMoveScroll()});
 
-        const amp: f32 = 8.0;
+        self.camera1.rotateByMouse(delta.x, delta.y);
+        self.camera1.fov += Input.GetMouseMoveScroll().y * 0.05;
+        self.camera1.fov = std.math.clamp(self.camera1.fov, 0.1, 120.0);
+
+        const amp: f32 = 12.0;
 
         if (Input.IsKeyHeld(.w)) self.camera1.moveZ(-amp * dt);
         if (Input.IsKeyHeld(.s)) self.camera1.moveZ(amp * dt);
         if (Input.IsKeyHeld(.a)) self.camera1.moveX(-amp * dt);
         if (Input.IsKeyHeld(.d)) self.camera1.moveX(amp * dt);
 
-        if (Input.IsKeyHeld(.e)) self.camera1.yaw += (amp / 3 * dt);
-        if (Input.IsKeyHeld(.q)) self.camera1.yaw += (-amp / 3 * dt);
+        if (Input.IsKeyHeld(.e)) self.lamp1.transform.rotation[0] += 0.03;
+        if (Input.IsKeyHeld(.q)) self.lamp1.transform.rotation[0] -= 0.03;
 
         if (Input.IsKeyHeld(.left_control)) self.camera1.moveY(-amp * dt);
         if (Input.IsKeyHeld(.space)) self.camera1.moveY(amp * dt);
@@ -83,7 +87,7 @@ pub const GameScene = struct {
         if (Input.IsKeyHeld(.g)) self.lamp1.transform.position[1] += amp * dt;
     }
 
-    pub fn draw(self: *GameScene) void {
+    pub fn draw(self: *GameScene, _: *Renderer) void {
         Renderer.clear();
 
         self.lamp1.mesh.bind();
@@ -92,7 +96,7 @@ pub const GameScene = struct {
         self.lamp1.shader.set_mat("u_projection", @bitCast(self.camera1.projection));
         self.lamp1.shader.set_mat("u_model", @bitCast(self.lamp1.transform.getModel()));
         self.lamp1.shader.set_vec4("u_light", @bitCast(self.lamp1.light_color));
-        Renderer.drawMesh(&self.model1.meshes[0]);
+        Renderer.drawMesh(&self.model2.meshes[0]);
 
         self.shader1.bind();
 
