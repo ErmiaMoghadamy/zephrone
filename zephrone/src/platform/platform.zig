@@ -6,6 +6,7 @@ const WindowParams = @import("./window.zig").WindowParams;
 const Time = @import("./time.zig").Time;
 const InputService = @import("../services/input.zig").InputService;
 
+
 pub const FrameContext = struct { dt: f32, aspect: f32 };
 
 pub const PlatformConfig = struct {
@@ -76,9 +77,5 @@ pub const Platform = struct {
             std.log.err("Escape key pressed", .{});
             glfw.setWindowShouldClose(self.window.window, true);
         }
-
-        // self.event_queue.append(self.allocator, ev) catch |err| {
-        //     std.log.err("Failed to queue event: {}", .{err});
-        // };
     }
 };
