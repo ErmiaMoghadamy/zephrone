@@ -2,6 +2,7 @@ const std = @import("std");
 const glfw = @import("zglfw");
 const zgl = @import("zopengl");
 const gl = zgl.bindings;
+const zgui = @import("zgui");
 const event = @import("event.zig");
 
 pub const WindowData = struct {
@@ -14,7 +15,6 @@ pub const WindowParams = struct {
     height: ?u32,
     title: []const u8,
 };
-
 
 pub const Window = struct {
     window: *glfw.Window,
@@ -31,16 +31,14 @@ pub const Window = struct {
         const title = try allocator.dupeZ(u8, params.title);
         defer allocator.free(title);
 
-        const width = if(params.width) |w| w else try getDefaultWidth();
-        const height = if(params.height) |h| h else try getDefaultHeight();
+        const width = if (params.width) |w| w else try getDefaultWidth();
+        const height = if (params.height) |h| h else try getDefaultHeight();
 
         var window = try glfw.createWindow(@intCast(width), @intCast(height), title, null, null);
         errdefer window.destroy();
 
-
         glfw.makeContextCurrent(window);
         Window.SetVsync(true);
-
 
         try zgl.loadCoreProfile(glfw.getProcAddress, 3, 3);
 
@@ -61,7 +59,6 @@ pub const Window = struct {
         glfw.getFramebufferSize(window, &fb_width, &fb_height);
         gl.viewport(0, 0, fb_width, fb_height);
 
-
         return win;
     }
 
@@ -69,6 +66,10 @@ pub const Window = struct {
         glfw.terminate();
         glfw.destroyWindow(self.window);
         allocator.destroy(self);
+    }
+
+    pub fn getSize(self: *Window) WindowData {
+        return self.data;
     }
 
     pub fn GetTime() f32 {
@@ -141,5 +142,6 @@ pub const Window = struct {
         _ = glfw.setWindowContentScaleCallback(self.window, event.contentScaleCallback);
         _ = glfw.setWindowCloseCallback(self.window, event.windowCloseCallback);
         _ = glfw.setCursorPosCallback(self.window, event.cursorPosCallback);
+        _ = glfw.setScrollCallback(self.window, event.scrollCallback);
     }
 };
