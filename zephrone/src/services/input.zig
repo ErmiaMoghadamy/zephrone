@@ -164,7 +164,7 @@ pub const InputService = struct {
 
     pub fn GetMouseMoveScroll() Position {
         const self = getInstance();
-        return self.mouse_delta;
+        return self.mouse_scroll;
     }
 };
 
