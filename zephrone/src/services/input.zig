@@ -8,6 +8,7 @@ pub const Position = struct {
 };
 
 pub const InputService = struct {
+    mouse_first: bool = true,
     mouse_pos: Position,
     mouse_delta: Position,
     mouse_scroll: Position,
@@ -56,10 +57,17 @@ pub const InputService = struct {
 
         switch (ev) {
             .MouseMove => |move_event| {
-                self.mouse_delta.x = move_event.x - self.mouse_pos.x;
-                self.mouse_delta.y = move_event.y - self.mouse_pos.y;
-                self.mouse_pos.x = move_event.x;
-                self.mouse_pos.y = move_event.y;
+                if (self.mouse_first) {
+                    self.mouse_pos.x = move_event.x;
+                    self.mouse_pos.y = move_event.y;
+                    self.mouse_first = false;
+                } else {
+                    self.mouse_delta.x = move_event.x - self.mouse_pos.x;
+                    self.mouse_delta.y = move_event.y - self.mouse_pos.y;
+                    self.mouse_pos.x = move_event.x;
+                    self.mouse_pos.y = move_event.y;
+                }
+
             },
             .MouseScroll => |scroll_event| {
                 self.mouse_scroll.x += scroll_event.x;
