@@ -108,3 +108,25 @@ pub const IndexBuffer = struct {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0);
     }
 };
+
+
+pub const InstanceBuffer = struct {
+    id: u32,
+
+    pub fn init() InstanceBuffer {
+        var buffer = InstanceBuffer{ .id = 0 };
+
+        gl.genBuffers(1, &buffer.id);
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.id);
+
+        return buffer;
+    }
+
+    pub fn deinit(self: *InstanceBuffer) void {
+        gl.deleteBuffers(1, &self.id);
+    }
+
+    pub fn bind(self: InstanceBuffer) void {
+        gl.bindBuffer(gl.ARRAY_BUFFER, self.id);
+    }
+};
